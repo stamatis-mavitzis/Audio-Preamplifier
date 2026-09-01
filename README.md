@@ -706,7 +706,7 @@ This project provided practical experience in:
 The repository contains the complete technical report:
 
 ```text
-Pre_Amplifier(2).pdf
+Pre_Amplifier.pdf
 ```
 
 The PDF includes:
