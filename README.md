@@ -2,18 +2,21 @@
 
 # 🎚️ High-Fidelity Audio Preamplifier
 
-### Stereo Analog Preamplifier • MM Phono Stage • RIAA Equalization • Custom PCB
+### Stereo Line Preamplifier • MM Phono Stage • RIAA Equalisation • Subwoofer Low-Pass Output
 
-A standalone audio-electronics project covering the complete design, construction, PCB development, assembly, troubleshooting, and experimental evaluation of a high-fidelity analog preamplifier.
+A standalone analog-audio project covering **circuit selection and adaptation, system integration, PCB development, construction, grounding, troubleshooting, and final hardware implementation**.
 
-![Status](https://img.shields.io/badge/status-completed-success)
-![Project](https://img.shields.io/badge/project-independent-blue)
-![Audio](https://img.shields.io/badge/audio-stereo-orange)
-![Supply](https://img.shields.io/badge/supply-%C2%B115%20V-lightgrey)
-![PCB](https://img.shields.io/badge/PCB-custom-green)
+[![Status](https://img.shields.io/badge/status-completed-success)](#)
+[![Project](https://img.shields.io/badge/project-independent-blue)](#)
+[![Audio](https://img.shields.io/badge/audio-stereo-orange)](#)
+[![Supply](https://img.shields.io/badge/supply-%C2%B115%20V-lightgrey)](#)
+[![Op--Amp](https://img.shields.io/badge/op--amp-LME49720-purple)](#)
+[![PCB](https://img.shields.io/badge/PCB-2--layer%20FR--4-green)](#)
 
-**Designed and built by Stamatios Mavitzis**  
-**June 2022**
+**Project by Stamatios Mavitzis**  
+**Completed: June 2022**
+
+### [📘 Read the complete technical report](./Pre_Amplifier.pdf)
 
 </div>
 
@@ -21,409 +24,436 @@ A standalone audio-electronics project covering the complete design, constructio
 
 ## Overview
 
-This project is a complete **stereo analog audio preamplifier** designed for use in a high-fidelity audio system.
+This project is a **standalone stereo analog audio preamplifier** intended for use between analog source equipment and an external power amplifier or other line-level destination.
 
-It supports conventional line-level sources as well as a **moving-magnet turntable cartridge** through a dedicated phono stage with **RIAA equalization**. The design also includes adjustable gain, volume and balance controls, multiple outputs, a regulated dual-rail power supply, and a custom PCB.
+The completed unit provides:
 
-The project was developed independently as a **standalone personal electronics project**. It is not associated with, submitted to, or developed on behalf of any university or academic institution.
+- one **moving-magnet (MM) phono input** with RIAA playback equalisation;
+- two conventional **stereo line-level inputs**;
+- four-position rotary source selection, with three positions used;
+- a **100 kΩ logarithmic stereo master-volume control**;
+- a fixed Project 88 line-stage gain configuration using the **15 kΩ gain-setting option**;
+- three **parallel stereo line-output pairs**;
+- a separately controlled **mono low-pass subwoofer output**;
+- an internal regulated nominal **±15 V analog supply**; and
+- a controlled **star-ground / protective-earth chassis-bonding arrangement**.
 
-The complete technical documentation is available in the PDF report included in this repository.
+The project was developed independently as a personal electronics project. It is not associated with, submitted to, or developed on behalf of a university or academic institution.
+
+The repository includes the complete technical report, which documents the circuitry, PCB implementation, grounding, construction, troubleshooting, limitations, and project photographs.
 
 ---
 
-## Main Features
+## At a Glance
 
-| Category | Implementation |
+| Category | Final implementation |
 |---|---|
-| Audio channels | Stereo |
-| Phono input | Moving-magnet (MM) |
-| Equalization | RIAA playback equalization |
-| Line inputs | Multiple analog line-level inputs |
-| Input selection | Rotary selector |
-| Gain | Adjustable / selectable |
-| User controls | Volume and balance |
-| Outputs | Multiple line-level outputs |
-| Analog supply | Regulated ±15 V |
-| Grounding | Star-ground architecture |
-| PCB | Custom-designed |
-| Enclosure | Metal chassis |
-| Signal wiring | Shielded where required |
-| PCB fabrication | JLCPCB |
+| Audio architecture | Stereo analog preamplifier |
+| Active inputs | Phono, Line 1, Line 2 |
+| Selector | 4 positions; 3 used, 1 spare |
+| Phono stage | MM, RIAA playback equalisation |
+| Line preamplifier | Elliott Sound Products Project 88 |
+| Implemented line-stage gain | 15 kΩ second-stage option only |
+| Balance control | **Not fitted; reference balance section bypassed** |
+| Master volume | 100 kΩ logarithmic stereo potentiometer |
+| Main outputs | 3 parallel stereo line-output pairs |
+| Subwoofer output | Adjustable mono low-pass line output |
+| Subwoofer filter | ESP Project 155, one mono channel used |
+| Calculated subwoofer range | Approx. 20–226 Hz |
+| Operational amplifiers | LME49720 dual audio op-amps |
+| Analog supply | Nominal regulated ±15 V |
+| Transformer | 15-0-15 VAC toroidal, approx. 15 VA |
+| Rectifier | Discrete 1N4004 diodes |
+| Smoothing capacitors | 4 × 2200 µF |
+| Regulators | LM7815 / LM7915 |
+| Local decoupling | 10 µF electrolytic + 100 nF ceramic |
+| Main PCB | 2-layer, 1.6 mm FR-4, 1 oz copper |
+| PCB manufacture | JLCPCB |
+| Grounding | Controlled chassis star point |
+| RCA connectors | Chassis-mounted but electrically isolated |
+
+> **Measurement note:** the completed unit was functionally tested and used for listening, but no calibrated laboratory measurements of THD/THD+N, SNR, frequency response, RIAA tracking error, crosstalk, clipping level, output impedance, supply ripple, or exact rail voltage were recorded. Numerical performance values in the report are therefore identified as design values, component values, reference data, or theoretical calculations rather than measured specifications.
 
 ---
 
-## Project Goals
+## Signal Architecture
 
-The main goal was not only to reproduce a working audio circuit, but to design and integrate a complete practical preamplifier system.
+```mermaid
+flowchart LR
+    P["MM Phono Input"] --> S["Rotary Input Selector"]
+    L1["Line Input 1"] --> S
+    L2["Line Input 2"] --> S
 
-Particular attention was given to:
+    S --> C{"Selected source"}
+    C -->|Phono| R["Project 06<br/>RIAA Phono Stage"]
+    C -->|Line 1 / Line 2| LP["Line-level path"]
 
-- Low-noise analog design
-- Signal integrity
-- RIAA equalization
-- PCB layout and component placement
-- Power-supply stability
-- Grounding strategy
-- Crosstalk reduction
-- Electromagnetic interference reduction
-- Input-level matching
-- Shielded signal routing
-- Mechanical integration
-- Troubleshooting and experimental optimization
-- Reliable long-term operation
+    R --> PRE["Project 88<br/>Line Preamplifier"]
+    LP --> PRE
 
----
+    PRE --> VOL["100 kΩ Log Stereo<br/>Volume Control"]
+    VOL --> OUT["3 Parallel Stereo<br/>Line Outputs"]
 
-## System Architecture
-
-The preamplifier is organized into several functional blocks:
-
-```text
-Turntable
-   │
-   ▼
-RIAA Phono Stage
-   │
-   ├─────────────────────────────┐
-   │                             │
-Line Input 1 ────────────────────┤
-Line Input 2 ────────────────────┤
-Line Input 3 ────────────────────┤
-                                 ▼
-                         Input Selection
-                                 │
-                                 ▼
-                         First Gain Stage
-                                 │
-                                 ▼
-                          Balance Control
-                                 │
-                                 ▼
-                           Volume Control
-                                 │
-                                 ▼
-                         Second Gain Stage
-                                 │
-                                 ▼
-                       Multiple Line Outputs
-                                 │
-             ┌───────────────────┼───────────────────┐
-             ▼                   ▼                   ▼
-        Power Amplifier     Active Speakers      Recorder / Test
+    PRE --> SUB["Project 155<br/>Mono Low-Pass Filter"]
+    SUB --> SUBOUT["Subwoofer<br/>Line Output"]
 ```
 
-The analog signal path is supplied from an independent regulated **±15 V power supply**.
+The reference Project 88 balance-control arrangement is **not used** in the completed preamplifier. The balance section is bypassed.
 
 ---
 
-## Circuit Design References
+## Circuit References
 
-Several well-known circuits published by **Rod Elliott / Elliott Sound Products (ESP)** were used as references during development.
+The project integrates and adapts several circuits published by **Rod Elliott / Elliott Sound Products (ESP)**.
 
-| ESP Project | Function used in this project |
+| ESP project | Function in the completed preamplifier |
 |---|---|
-| **Project P05** | Regulated dual-rail power supply |
-| **Project 06** | MM phono preamplifier and RIAA equalization |
-| **Project 88** | Balance, volume, gain and second amplification stage |
+| **Project 05** | Regulated symmetrical power supply |
+| **Project 06** | Moving-magnet phono preamplifier and RIAA equalisation |
+| **Project 88** | Main line-level preamplifier |
+| **Project 155** | Adjustable low-pass filter for the subwoofer output |
 
-These circuits served as the basis for individual functional sections. The complete system integration, PCB organization, signal routing, grounding, mechanical construction, troubleshooting, and final implementation were developed specifically for this project.
-
----
-
-## Phono Stage
-
-The dedicated phono input is intended for a **moving-magnet cartridge**.
-
-Because the output voltage of a turntable cartridge is much lower than that of a conventional line-level source, the phono stage performs two essential functions:
-
-1. **Low-noise amplification** of the cartridge signal.
-2. **RIAA equalization** to restore the correct playback frequency response.
-
-The output of the phono stage is raised to approximately line level before entering the main preamplifier signal path.
+These circuits provide the basis for the main functional stages. The PCB organisation, enclosure integration, signal interconnection, grounding arrangement, cable routing, construction, troubleshooting, and final system implementation were developed specifically for this project.
 
 ---
 
-## Main Gain and Control Stages
+## Moving-Magnet Phono Stage
 
-After input selection, the signal passes through the main active circuitry.
+The phono input is based on **ESP Project 06** and is intended for a conventional moving-magnet cartridge.
 
-### First Gain Stage
+A phono cartridge produces a much smaller signal than a normal line-level source, so the phono stage provides both:
 
-The first stage provides buffering and initial amplification while maintaining suitable input and output impedances.
+1. low-noise voltage amplification; and
+2. the frequency-dependent **RIAA playback equalisation** required for vinyl reproduction.
 
-### Balance Control
+The final implementation uses **LME49720** dual operational amplifiers and operates from the same nominal ±15 V supply as the remaining analog circuitry.
 
-The balance network allows the relative levels of the left and right channels to be adjusted.
+Because the phono path handles the smallest signals in the system, short routing, shielding, grounding, and physical separation from the transformer and mains wiring are particularly important.
 
-### Volume Control
+---
 
-A stereo potentiometer controls both channels simultaneously before the second gain stage.
+## Line Preamplifier and Volume Control
 
-### Second Gain Stage
+The main line-level circuitry is based on **ESP Project 88**.
 
-The second active stage provides additional amplification. A selectable feedback network allows different gain settings to be used to compensate for differences between connected audio sources.
+The reference design provides several possible gain settings, but the completed hardware uses **only the 15 kΩ second-stage gain-setting option**. In the Project 88 reference design, this option corresponds to approximately **6.02 dB of second-stage gain**.
+
+The higher-gain options were not required for the associated power amplifier.
+
+The master level is controlled by a **100 kΩ logarithmic stereo potentiometer**.
+
+### Balance control
+
+The Project 88 reference circuit includes an optional balance-control arrangement. This feature was **not implemented** in the completed preamplifier.
+
+The balance section is bypassed, so the front panel provides **no left/right balance adjustment**.
+
+---
+
+## Main Outputs
+
+The completed unit provides **three stereo line-output pairs**.
+
+These outputs are connected in parallel to the same left- and right-channel output signals; they are **not three independently buffered outputs**.
+
+This arrangement is intended for high-impedance line-level destinations such as:
+
+- external power amplifiers;
+- active loudspeakers;
+- recording equipment;
+- headphone amplifiers; or
+- other line-level audio equipment.
+
+The outputs are not intended to drive passive loudspeakers directly.
+
+---
+
+## Subwoofer Low-Pass Output
+
+A separate PCB based on the low-pass section of **ESP Project 155** provides the subwoofer function.
+
+The filter PCB contains two independent mono channels, but only **one mono channel** is used in the completed preamplifier.
+
+The three frequency-setting capacitors in the active channel are:
+
+```text
+C1 = C2 = C3 = 0.5 µF
+```
+
+With the original Project 155 resistor values, this gives a **theoretical** adjustable -3 dB range of approximately:
+
+```text
+20 Hz ─────────────── 226 Hz
+```
+
+The front panel provides separate controls for:
+
+- subwoofer cut-off frequency; and
+- subwoofer output level.
+
+The subwoofer output remains a **line-level signal** and is intended for an active subwoofer or an external subwoofer power amplifier.
+
+> The 20–226 Hz range is calculated from the Project 155 scaling relationship and the installed capacitor values; it was **not measured on the completed hardware**.
 
 ---
 
 ## Power Supply
 
-The analog electronics operate from a regulated symmetrical supply based on **ESP Project P05**.
+The analog circuitry is powered by a regulated symmetrical supply based on **ESP Project 05**.
 
 ```text
-Transformer
-    │
-    ▼
-Rectifier
-    │
-    ▼
-Reservoir Capacitors
-    │
-    ├───────────────┐
-    ▼               ▼
-Positive          Negative
-Regulator         Regulator
-    │               │
-    ▼               ▼
-  +15 V           -15 V
-    │               │
-    └───────┬───────┘
-            ▼
-           GND
+15-0-15 VAC Toroidal Transformer
+              │
+              ▼
+      Discrete 1N4004 Rectifier
+              │
+              ▼
+      4 × 2200 µF Smoothing
+          Capacitors
+              │
+       ┌──────┴──────┐
+       ▼             ▼
+     LM7815        LM7915
+       │             │
+       ▼             ▼
+     +15 V          -15 V
+       └──────┬──────┘
+              ▼
+             0 V
 ```
 
-The dual-rail supply allows the operational amplifiers to process audio signals around the 0 V reference without requiring a virtual ground.
+### Implemented supply hardware
 
-Local bypass and decoupling capacitors are positioned close to the active devices to improve supply stability and reduce high-frequency noise.
+| Component | Implementation |
+|---|---|
+| Transformer | 15-0-15 VAC toroidal, approx. 15 VA |
+| Rectification | Discrete 1N4004 silicon diodes |
+| Main smoothing | 4 × 2200 µF electrolytic capacitors |
+| Positive regulator | LM7815 |
+| Negative regulator | LM7915 |
+| Nominal regulated rails | +15 V / 0 V / -15 V |
+| Local bypassing | 100 nF ceramic |
+| Local decoupling | 10 µF electrolytic |
+
+The exact positive and negative rail voltages were not formally recorded, so **±15 V is treated as the nominal design value rather than a measured specification**.
 
 ---
 
-## Grounding and Noise Control
+## Grounding and Chassis Bonding
 
-Grounding was treated as an important part of the electrical design rather than only as a PCB connection requirement.
+Grounding was treated as part of the analog design rather than simply as a PCB connectivity requirement.
 
-A **star-ground architecture** was used to reduce circulating ground currents and minimize hum.
+The final arrangement uses a **controlled chassis star point** where the principal circuit-ground system and the protective-earth chassis bond meet.
 
 ```text
-Input Ground ──────────┐
-Phono Ground ──────────┤
-Gain Stage Ground ─────┤
-Output Ground ─────────┼──► STAR GROUND POINT
-Power Supply Ground ───┤
-Chassis Ground ────────┘
+Audio / Circuit Returns ──────┐
+Power-Supply Reference ───────┤
+                              ├──► Dedicated Chassis Star Point
+Protective Earth ─────────────┤
+Metal Chassis ────────────────┘
 ```
 
-The metal chassis is connected to the central grounding system so that it also acts as an electromagnetic shield.
+The rear-panel RCA connectors are mechanically mounted to the metal enclosure but are **electrically isolated from the chassis**. Their signal returns are routed through the intended grounding network instead of creating multiple uncontrolled chassis connections.
+
+This arrangement helps reduce unintended parallel return paths and makes the relationship between signal ground, chassis, and protective earth explicit.
 
 ---
 
 ## PCB Design and Manufacturing
 
-The initial schematic and circuit-development work was carried out in **Autodesk Eagle**. The final PCB layout and manufacturing preparation were completed in **EasyEDA**.
+The main schematic was developed in **Autodesk Eagle** and subsequently transferred to **EasyEDA**, where the final PCB layout and manufacturing preparation were completed.
 
-The PCB was designed specifically for this project, with emphasis on:
+### Main PCB construction
 
-- Short and controlled audio paths
-- Separation of sensitive analog circuitry from the power supply
-- Organized stereo-channel routing
-- Local power-supply decoupling
-- Ground-current control
-- Mechanical accessibility of connectors and controls
-- Reduced coupling between input wiring
-- Practical assembly and servicing
+| Property | Value |
+|---|---|
+| Layers | 2 |
+| Material | FR-4 |
+| Thickness | 1.6 mm |
+| Copper | 1 oz |
+| Assembly | Predominantly through-hole |
+| Op-amp mounting | Socketed DIP packages |
+| Manufacturer | JLCPCB |
 
-The finished PCB was manufactured by **JLCPCB**, manually assembled, soldered, inspected, tested, and installed in the final enclosure.
+The PCB layout was organised with attention to:
+
+- short analog signal paths;
+- separation of sensitive audio circuitry from rectifier and transformer wiring;
+- compact op-amp feedback networks;
+- local supply decoupling;
+- controlled ground and return-current paths;
+- consistent stereo-channel routing; and
+- practical manual assembly and servicing.
 
 ---
 
 ## Practical Troubleshooting
 
-One of the most valuable parts of the project was the transition from schematic design to a real physical audio system. Several problems only became apparent after construction and testing.
+### Input crosstalk
 
-### Input Crosstalk
+During early operation, a signal connected to one input could be heard weakly while another input was selected.
 
-Signals from unselected inputs were initially detectable in the active signal path.
+The likely mechanism was **parasitic capacitive coupling between adjacent unbalanced signal wires**, especially where conductors ran in parallel over significant distances.
 
-**Cause:** electromagnetic coupling between nearby high-impedance signal wires.
+The susceptible wiring was replaced with **coaxial audio cable**, and the internal routing was reorganised. Audible bleed between unselected inputs was substantially reduced.
 
-**Improvement:** the original wiring was replaced with **shielded coaxial cable**, significantly reducing coupling between inputs.
+### Mains-related hum
 
-### 50 Hz Hum
+Audible mains-related hum was also encountered during development.
 
-A noticeable mains-frequency hum appeared during testing.
+The hum was identified by listening; it was **not measured with FFT or frequency-domain instrumentation**, so it should not be described as a confirmed 50 Hz measurement.
 
-**Cause:** a mains-related wire between the chassis and power switch was routed too close to sensitive analog circuitry.
+Improvements included:
 
-**Improvement:** the cable was physically moved away from the PCB and low-level signal paths.
+- increasing separation between mains-related wiring and low-level signal paths;
+- moving sensitive wiring farther from the transformer where practical;
+- using coaxial cable where shielding was beneficial;
+- electrically isolating the RCA shells from the chassis; and
+- consolidating the intended return paths at the chassis star point.
 
-### Chassis Grounding
+These changes reduced the audible hum during normal use.
 
-The metal enclosure initially behaved as a floating conductive structure.
+### LME49720 decoupling
 
-**Improvement:** the chassis was connected to the central star-ground point, improving electromagnetic shielding and reducing noise.
+No audible instability was encountered with the final LME49720 implementation.
 
-### Operational-Amplifier Stability
+Because the LME49720 is a relatively high-bandwidth audio op-amp, local **100 nF ceramic + 10 µF electrolytic** supply decoupling was retained close to the active circuitry.
 
-Small operating changes were observed during extended testing.
+---
 
-**Improvements included:**
+## Final Implemented Configuration
 
-- Additional local bypass capacitors
-- Improved power-supply decoupling
-- Better component placement
-- Consideration of thermal behaviour
+```text
+Inputs:
+  • 1 × MM phono
+  • 2 × stereo line-level
+  • 1 unused selector position
 
-### Different Source Levels
+Main signal path:
+  • Project 06 phono stage
+  • Project 88 line preamplifier
+  • 15 kΩ gain option only
+  • 100 kΩ logarithmic stereo volume control
+  • Balance section bypassed
+  • 3 parallel stereo line outputs
 
-Different line-level sources can produce noticeably different output amplitudes.
+Subwoofer:
+  • Project 155 low-pass section
+  • 1 mono channel used
+  • C1 = C2 = C3 = 0.5 µF
+  • Calculated range ≈ 20–226 Hz
 
-**Improvement:** selectable gain settings were implemented using different feedback-resistor combinations.
+Power:
+  • 15-0-15 VAC toroidal transformer
+  • 1N4004 rectification
+  • 4 × 2200 µF smoothing capacitors
+  • LM7815 / LM7915 regulation
+  • Nominal ±15 V rails
+
+Active devices:
+  • LME49720 dual audio operational amplifiers
+```
 
 ---
 
 ## Development Workflow
 
-```text
-Circuit Research
-      │
-      ▼
-Circuit Selection
-      │
-      ▼
-Schematic Design
-      │
-      ▼
-Simulation / Analysis
-      │
-      ▼
-PCB Design
-      │
-      ▼
-PCB Manufacturing
-      │
-      ▼
-Component Assembly
-      │
-      ▼
-Initial Testing
-      │
-      ▼
-Troubleshooting
-      │
-      ▼
-Noise Optimization
-      │
-      ▼
-Mechanical Assembly
-      │
-      ▼
-Final Testing
+```mermaid
+flowchart LR
+    A["Reference-Circuit Research"] --> B["Circuit Selection & Adaptation"]
+    B --> C["Schematic Development"]
+    C --> D["Design Calculations"]
+    D --> E["PCB Layout"]
+    E --> F["PCB Manufacturing"]
+    F --> G["Manual Assembly"]
+    G --> H["Enclosure Integration"]
+    H --> I["Functional Testing"]
+    I --> J["Troubleshooting"]
+    J --> K["Grounding & Wiring Optimisation"]
+    K --> L["Final Implementation"]
 ```
 
 ---
 
-## Final Result
+## Project Scope and Measurement Limitations
 
-The completed system is a functional stereo analog preamplifier capable of interfacing with:
+This was a practical construction and integration project rather than a calibrated audio-measurement study.
 
-- Moving-magnet turntables
-- CD players
-- DACs
-- Media streamers
-- Tape equipment
-- Other line-level analog sources
-- Power amplifiers
-- Active loudspeakers
-- Recording or measurement equipment
+The finished preamplifier was functionally tested and used for listening, but the following were **not formally measured**:
 
-The project demonstrated that high-quality analog audio performance depends on much more than the circuit schematic alone. PCB geometry, grounding topology, cable routing, shielding, power-supply filtering, decoupling, mechanical construction, thermal behaviour, and practical troubleshooting all had a significant effect on the final result.
+- THD or THD+N;
+- signal-to-noise ratio;
+- channel separation / crosstalk in dB;
+- absolute frequency response;
+- RIAA tracking error;
+- exact line-stage gain;
+- clipping level;
+- output impedance;
+- power-supply ripple; and
+- exact regulated rail voltage.
 
----
-
-## Skills and Experience
-
-This project provided practical experience in:
-
-- Analog circuit design
-- Audio electronics
-- Operational-amplifier circuits
-- RIAA equalization
-- Phono preamplifiers
-- Feedback networks
-- Linear power supplies
-- Voltage regulation
-- Schematic capture
-- PCB layout
-- Component selection
-- PCB manufacturing
-- Through-hole assembly
-- Soldering
-- Star grounding
-- Shielded audio wiring
-- EMI reduction
-- Crosstalk reduction
-- Troubleshooting
-- Audio-system integration
-- Experimental testing
+For that reason, the project documentation intentionally avoids presenting published reference-circuit specifications as measurements of this particular unit.
 
 ---
 
-## Repository Contents
+## Repository Documentation
 
-The repository contains the complete project documentation, including the main technical report:
+The principal technical document is:
 
-```text
-Pre_Amplifier.pdf
-```
+### [`Pre_Amplifier.pdf`](./Pre_Amplifier.pdf)
 
-The report includes:
+The report contains:
 
-- System architecture
-- Power-supply design
-- Phono-stage design
-- RIAA equalization
-- Gain and control stages
-- Complete schematics
-- PCB design
-- PCB construction
-- Hardware photographs
-- Final assembly photographs
-- Troubleshooting procedures
-- Noise-reduction modifications
-- Experimental observations
-- Final conclusions
+- system architecture;
+- power-supply design and calculations;
+- MM phono-stage and RIAA discussion;
+- line-preamplifier implementation;
+- volume and gain configuration;
+- subwoofer low-pass filter;
+- grounding and protective-earth arrangement;
+- complete circuit schematics;
+- PCB construction and implementation;
+- hardware and development photographs;
+- troubleshooting and noise-reduction work;
+- limitations of the evaluation; and
+- final conclusions and possible future improvements.
 
 ---
 
-## Tools Used
+## Tools and Manufacturing
 
-| Tool | Use |
+| Tool / Service | Use |
 |---|---|
-| **Autodesk Eagle** | Initial schematic and circuit development |
-| **EasyEDA** | Final PCB design and fabrication preparation |
+| **Autodesk Eagle** | Main schematic development |
+| **EasyEDA** | Final PCB layout and fabrication preparation |
 | **JLCPCB** | PCB manufacturing |
+
+---
+
+## Skills Demonstrated
+
+This project involved practical work in analog audio electronics, operational-amplifier circuits, RIAA equalisation, linear power supplies, voltage regulation, schematic capture, PCB layout, through-hole assembly, soldering, grounding, shielded audio wiring, EMI/crosstalk reduction, enclosure integration, qualitative troubleshooting, and system-level hardware implementation.
 
 ---
 
 ## Acknowledgements
 
-Special acknowledgement is given to **Rod Elliott and Elliott Sound Products** for publishing the audio circuit designs and technical material that were used as references during development.
+Special acknowledgement is given to **Rod Elliott and Elliott Sound Products** for publishing the reference circuits and technical material used as the basis for several sections of the preamplifier.
 
-I would also like to thank **Lukas Chevas** for his help during the project, particularly with troubleshooting, practical implementation, and optimization of the final design.
-
----
-
-## Author
-
-**Stamatios Mavitzis**  
-Independent electronics project  
-June 2022
+I would also like to thank **Chevas Lukas** for his valuable help, support, and practical assistance during the development of the project.
 
 ---
 
 <div align="center">
 
-### High-Fidelity Audio Preamplifier
+## Author
 
-*Analog design • PCB development • construction • testing • troubleshooting*
+**Stamatios Mavitzis**  
+Independent Engineering Project  
+Project completed: **June 2022**
+
+---
+
+*Analog audio • PCB development • grounding • construction • troubleshooting*
 
 </div>
