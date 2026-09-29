@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎚️ High-Fidelity Audio Preamplifier
+# High-Fidelity Audio Preamplifier
 
 ### Stereo Line Preamplifier • MM Phono Stage • RIAA Equalisation • Subwoofer Low-Pass Output
 
