@@ -16,7 +16,7 @@ A standalone analog-audio project covering **circuit selection and adaptation, s
 **Project by Stamatios Mavitzis**  
 **Completed: June 2022**
 
-### [📘 Read the complete technical report](./Pre_Amplifier.pdf)
+### [Read the complete technical report](./Pre_Amplifier.pdf)
 
 </div>
 
